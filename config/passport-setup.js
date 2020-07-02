@@ -58,8 +58,7 @@ function randString() {
 var google_strategy = new GoogleStrategy({
 	//options for the google strategy
 	callbackURL: '/auth/google/redirect',
-	clientID: keys.google.CLIENT_ID,
-	clientSecret: keys.google.CLIENT_SECRET
+	...(keys.google)
 }, (accessToken, refreshToken, profile, done) => {
 	console.log(profile);
 	// console.log("acesstoken  "+accessToken);
@@ -131,8 +130,7 @@ var google_strategy = new GoogleStrategy({
 
 var facebook_strategy = new FacebookStrategy({
 	//options for facebook strategy
-	clientID: keys.facebook.CLIENT_ID,
-	clientSecret: keys.facebook.CLIENT_SECRET,
+	...(keys.facebook),
 	callbackURL: '/auth/facebook/redirect',
 	scope: ['r_emailaddress', 'r_liteprofile'],
 	state: true
@@ -191,8 +189,7 @@ var facebook_strategy = new FacebookStrategy({
 
 
 var linkedin_Strategy = passport.use(new LinkedInStrategy({
-	clientID: keys.linkedin.CLIENT_ID,
-	clientSecret: keys.linkedin.CLIENT_SECRET,
+	...(keys.linkedin),
 	callbackURL: "/auth/linkedin/redirect",
 	scope: ['r_emailaddress', 'r_liteprofile']
 },
