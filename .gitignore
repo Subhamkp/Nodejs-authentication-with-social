@@ -63,4 +63,5 @@ typings/
 *.key
 *.crt
 
-config/keys.js
+.vscode
+# config/keys.js

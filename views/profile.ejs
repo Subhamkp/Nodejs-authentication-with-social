@@ -1,52 +1,40 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>OAUTH</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="shortcut icon" type="image/x-icon" href="../favicon.png"/>
-    </head>
-    <body>
-        <nav>
-            <ul>
-                <% if (user) { %>
-                <li><a href="/auth/logout">Log out</a></li>
-                    <% if (user.setEmail ) { %>
-                        <li><a href="/profile/verifyemail">VerifyEmail</a></li>
-                    <% } %>
-                <% } else { %>
-                <li><a href="/auth/login">Login</a></li>
-                <li><a href="/auth/register">Register</a></li>
-                <li><a href="/auth/forgot">Forgot password</a></li>
-                <% } %>
-                <li><a href="/">Homepage</a></li>
-                <li><a href="/profile">Profile</a></li>
-            </ul>
-        </nav>
-        <header>
-            <h1>Welcome to your profile, <%= user.name %></h1>
-        </header>
 
-        <main>
-          <div class="row">
-            <%- include('flash'); %>
-              <div class="col-xs-12 col-sm-4">
-                  <img style="height:280px; width:300px" src="<%= user.thumbnail %>" />
-              </div>
-              <div class="col-xs-12 col-sm-8">
-                <ul style="list-style-type: none;">
-                  <li>Name : <%=user.name%></li>
+<head>
+  <meta charset="utf-8">
+  <title>OAUTH</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+</head>
 
-                  <% if (user.setEmail) { %>
-                    <li>Email : <%=user.email%>
-                      <% if (!user.verifiedEmail) { %>
-                          ( <a href="/profile/verifyemail">VerifyEmail</a> )
-                      <% } %>
-                    </li>
-                  <% } else{%>
-                    <li>Email : Seems like you have used mobile in FB </li>
-                  <%}%>
+<body>
+  <%- include('navbar', {user: user}); %>
+
+  <header>
+    <h1>Welcome to your profile, <%= user.name %></h1>
+  </header>
+
+  <main>
+    <div class="row">
+      <%- include('flash'); %>
+      <div class="col-xs-12 col-sm-4">
+        <img style="height:280px; width:300px" src="<%= user.thumbnail %>" />
+      </div>
+      <div class="col-xs-12 col-sm-8">
+        <ul style="list-style-type: none;">
+          <li>Name : <%=user.name%></li>
+
+          <% if (user.setEmail) { %>
+          <li>Email : <%=user.email%>
+            <% if (!user.verifiedEmail) { %>
+            ( <a href="/profile/verifyemail">VerifyEmail</a> )
+            <% } %>
+          </li>
+          <% } else{%>
+          <li>Email : Seems like you have used mobile in FB </li>
+          <%}%>
                   <%
                     var d=user.DOB;
                     var dob;
@@ -54,34 +42,36 @@
                       dob=d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
                     }
                   %>
-                  <% if (d) { %>
-                    <li>Date of Birth : <%=dob%>  </li>
-                  <% } %>
+          <% if (d) { %>
+          <li>Date of Birth : <%=dob%> </li>
+          <% } %>
 
-                  <% if (user.mobile) { %>
-                    <li>Mobile No. : <%=user.mobile%> </li>
-                  <% } %>
+          <% if (user.mobile) { %>
+          <li>Mobile No. : <%=user.mobile%> </li>
+          <% } %>
 
-                  <% if (user.gender) { %>
-                    <li>Gender : <%=user.gender%> </li>
-                  <% } %>
-                </ul>
-              </div>
-            </div>
-
-        </main>
-        <div class="col-sm-10" id="help">
-        <p style="margin:8px auto;padding:5px auto;">Note:  For getting the birthday information of the user from google plus. The user birthday info should be public in his google plus profile
-           <a target="_blank" href="https://github.com/anthonyjgrove/react-google-login/issues/98">
-             <button class="btn btn-sm btn-success ">To Know more
-             </button>
-           </a>
-            <a target="_blank" href="https://aboutme.google.com/">
-              <button class="btn btn-sm btn-success ">To make public</button>
-            </a>
-        </p>
+          <% if (user.gender) { %>
+          <li>Gender : <%=user.gender%> </li>
+          <% } %>
+        </ul>
       </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    </body>
+    </div>
+
+  </main>
+  <div class="col-sm-10" id="help">
+    <p style="margin:8px auto;padding:5px auto;">Note: For getting the birthday information of the user from google
+      plus. The user birthday info should be public in his google plus profile
+      <a target="_blank" href="https://github.com/anthonyjgrove/react-google-login/issues/98">
+        <button class="btn btn-sm btn-success ">To Know more
+        </button>
+      </a>
+      <a target="_blank" href="https://aboutme.google.com/">
+        <button class="btn btn-sm btn-success ">To make public</button>
+      </a>
+    </p>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+
 </html>

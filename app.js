@@ -7,22 +7,22 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const morgan = require('morgan');
 const flash = require('connect-flash');
-const mongoose =require('mongoose');
+const mongoose = require('mongoose');
 
-const authRoutes= require('./routes/auth-routes');
-const profileRoutes= require('./routes/profile-routes');
-const passportSetup =require('./config/passport-setup');
-const keys =require('./config/keys');
+const authRoutes = require('./routes/auth-routes');
+const profileRoutes = require('./routes/profile-routes');
+const passportSetup = require('./config/passport-setup');
+const keys = require('./config/keys');
 
-const app= express();
+const app = express();
 
 // HTTPS server
-var https = require('https');
-var fs = require('fs');
-var options = {
-  key: fs.readFileSync('privateKey.key'),
-  cert: fs.readFileSync('certificate.crt')
-};
+// var https = require('https');
+// var fs = require('fs');
+// var options = {
+//   key: fs.readFileSync('privateKey.key'),
+//   cert: fs.readFileSync('certificate.crt')
+// };
 
 // set up view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -44,14 +44,14 @@ app.use(cookieParser());
 
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
-    key: 'user_sid',
-    secret: keys.session.cookieKey,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: 24*60*60*60*1000,
-        secure: true
-    }
+  key: 'user_sid',
+  secret: keys.session.cookieKey,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    expires: 24 * 60 * 60 * 60 * 1000,
+    secure: true
+  }
 }));
 
 // initialize passport
@@ -59,28 +59,28 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to mongo DB
-const url= process.env.MONGODB_URI || keys.mongodb.dbURI;
-mongoose.connect(url,function(err){
-	if(err)
-		 console.log(err);
-	else
-		console.log('mongodb connected');
+const url = process.env.MONGODB_URI || keys.mongodb.dbURI;
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, function (err) {
+  if (err)
+    console.log(err);
+  else
+    console.log('mongodb connected');
 });
 
 // Express Validator
 app.use(expressValidator({
-  errorFormatter: function(param, msg, value) {
-      var namespace = param.split('.')
-      , root    = namespace.shift()
+  errorFormatter: function (param, msg, value) {
+    var namespace = param.split('.')
+      , root = namespace.shift()
       , formParam = root;
 
-    while(namespace.length) {
+    while (namespace.length) {
       formParam += '[' + namespace.shift() + ']';
     }
     return {
-      param : formParam,
-      msg   : msg,
-      value : value
+      param: formParam,
+      msg: msg,
+      value: value
     };
   }
 }));
@@ -99,21 +99,21 @@ app.use(function (req, res, next) {
 });
 
 //create routes
-app.use('/auth',authRoutes);
-app.use('/profile/',profileRoutes);
+app.use('/auth', authRoutes);
+app.use('/profile/', profileRoutes);
 
 //home route
-app.get('/',(req,res)=>{
-  res.render('home',{user:req.user});
+app.get('/', (req, res) => {
+  res.render('home', { user: req.user });
 });
 
 // Set Port
 app.set('port', (process.env.PORT || 443));
 
-https.createServer(options, app).listen(app.get('port'), function(){
-	console.log('Server started on port '+app.get('port'));
-});
-
-// app.listen(app.get('port'), function(){
-// 	console.log('Server started on port '+app.get('port'));
+// https.createServer(options, app).listen(app.get('port'), function () {
+//   console.log('Server started on port ' + app.get('port'));
 // });
+
+app.listen(app.get('port'), function () {
+  console.log('Server started on port ' + app.get('port'));
+});
