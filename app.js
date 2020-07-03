@@ -18,12 +18,12 @@ const passportSetup = require('./config/passport-setup');
 const app = express();
 
 // HTTPS server
-// var https = require('https');
-// var fs = require('fs');
-// var options = {
-//   key: fs.readFileSync('privateKey.key'),
-//   cert: fs.readFileSync('certificate.crt')
-// };
+var https = require('https');
+var fs = require('fs');
+var options = {
+  key: fs.readFileSync('privateKey.key'),
+  cert: fs.readFileSync('certificate.crt')
+};
 
 // set up view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -111,10 +111,10 @@ app.get('/', (req, res) => {
 // Set Port
 app.set('port', process.env.PORT);
 
-// https.createServer(options, app).listen(app.get('port'), function () {
-//   console.log('Server started on port ' + app.get('port'));
-// });
-
-app.listen(app.get('port'), function () {
+https.createServer(options, app).listen(app.get('port'), function () {
   console.log('Server started on port ' + app.get('port'));
 });
+
+// app.listen(app.get('port'), function () {
+//   console.log('Server started on port ' + app.get('port'));
+// });
