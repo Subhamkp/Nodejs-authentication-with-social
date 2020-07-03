@@ -13,11 +13,12 @@ const { SESSION_COOKIE_KEY } = process.env;
 const authRoutes = require('./routes/auth-routes');
 const profileRoutes = require('./routes/profile-routes');
 const passportSetup = require('./config/passport-setup');
-
+let SecureHttpsServer = false;
 
 const app = express();
 
 // HTTPS server
+// SecureHttpsServer = true;
 // var https = require('https');
 // var fs = require('fs');
 // var options = {
@@ -45,13 +46,12 @@ app.use(cookieParser());
 
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
-  key: 'user_sid',
   secret: SESSION_COOKIE_KEY,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     expires: 24 * 60 * 60 * 60 * 1000,
-    secure: true
+    secure: SecureHttpsServer
   }
 }));
 
@@ -111,6 +111,7 @@ app.get('/', (req, res) => {
 // Set Port
 app.set('port', process.env.PORT);
 
+// HTTPS Server
 // https.createServer(options, app).listen(app.get('port'), function () {
 //   console.log('Server started on port ' + app.get('port'));
 // });
