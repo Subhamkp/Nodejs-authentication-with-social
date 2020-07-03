@@ -26,7 +26,7 @@
         <ul style="list-style-type: none;">
           <li>Name : <%=user.name%></li>
 
-          <% if (user.setEmail) { %>
+          <% if (user.emailPresent) { %>
           <li>Email : <%=user.email%>
             <% if (!user.verifiedEmail) { %>
             ( <a href="/profile/verifyemail">VerifyEmail</a> )

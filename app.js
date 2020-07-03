@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const expressValidator = require('express-validator');
 const path = require('path');
@@ -8,11 +9,11 @@ const session = require('express-session');
 const morgan = require('morgan');
 const flash = require('connect-flash');
 const mongoose = require('mongoose');
-
+const { SESSION_COOKIE_KEY } = process.env;
 const authRoutes = require('./routes/auth-routes');
 const profileRoutes = require('./routes/profile-routes');
 const passportSetup = require('./config/passport-setup');
-const keys = require('./config/keys');
+
 
 const app = express();
 
@@ -45,7 +46,7 @@ app.use(cookieParser());
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
   key: 'user_sid',
-  secret: keys.session.cookieKey,
+  secret: SESSION_COOKIE_KEY,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -59,7 +60,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to mongo DB
-const url = process.env.MONGODB_URI || keys.mongodb.dbURI;
+const url = process.env.MONGODB_URI;
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, function (err) {
   if (err)
     console.log(err);
@@ -108,7 +109,7 @@ app.get('/', (req, res) => {
 });
 
 // Set Port
-app.set('port', (process.env.PORT || 443));
+app.set('port', process.env.PORT);
 
 https.createServer(options, app).listen(app.get('port'), function () {
   console.log('Server started on port ' + app.get('port'));

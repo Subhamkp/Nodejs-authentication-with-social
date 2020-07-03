@@ -1,9 +1,10 @@
+require('dotenv').config();
 const router = require('express').Router();
 const async = require('async');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const keys = require('../config/keys');
 var User = require('../models/user');
+const { DOMAIN_EMAIL, DOMAIN_PASSWORD } = process.env;
 
 const authCheck = (req, res, next) => {
 	if (!req.user) {
@@ -51,8 +52,8 @@ router.get('/verifyemail', authCheck, function (req, res) {
 				var transporter = nodemailer.createTransport({
 					service: 'gmail',
 					auth: {
-						user: keys.mail.email,
-						pass: keys.mail.password
+						user: DOMAIN_EMAIL,
+						pass: DOMAIN_PASSWORD
 					}
 				});
 				var mailOptions = {
@@ -106,8 +107,8 @@ router.get('/verifyemail/:token', function (req, res) {
 			var transporter = nodemailer.createTransport({
 				service: 'gmail',
 				auth: {
-					user: keys.mail.email,
-					pass: keys.mail.password
+					user: DOMAIN_EMAIL,
+					pass: DOMAIN_PASSWORD
 				}
 			});
 			var mailOptions = {

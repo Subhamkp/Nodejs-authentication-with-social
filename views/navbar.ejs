@@ -2,7 +2,7 @@
     <ul>
         <% if (user) { %>
         <li><a href="/auth/logout">Log out</a></li>
-        <% if (user.setEmail && !user.verifiedEmail ) { %>
+        <% if (user.emailPresent && !user.verifiedEmail ) { %>
         <li><a href="/profile/verifyemail">VerifyEmail</a></li>
         <% } %>
         <% } else { %>

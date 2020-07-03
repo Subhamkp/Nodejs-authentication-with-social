@@ -10,7 +10,7 @@ const userSchema = new Schema({
 		index: { unique: true },
 		trim: true
 	},
-	setEmail: { type: Boolean, default: false },
+	emailPresent: { type: Boolean, default: false },
 	verifyEmailToken: String,
 	verifyEmailExpires: Date,
 	verifiedEmail: { type: Boolean, default: false },
@@ -29,24 +29,19 @@ const userSchema = new Schema({
 	linkedinId: String,
 });
 
-var User = module.exports = mongoose.model('User', userSchema);
-// model is exported to create a new instance and it is also saved here for other functions to run on User as whole
-userSchema.pre('save', function (next) {
-	var user = this;
+userSchema.statics.HashPassword = async function (candidatePassword) {
 	var SALT_FACTOR = 10;
+	var hashValue = await bcrypt.
+		genSalt(SALT_FACTOR).
+		then((salt) => {
+			return bcrypt.hash(candidatePassword, salt)
+		}).then((hash) => {
+			return hash;
+		})
+	return hashValue;
+};
 
-	if (!user.isModified('password')) return next();
-	bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
-		if (err) return next(err);
-
-		bcrypt.hash(user.password, salt, function (err, hash) {
-			if (err) return next(err);
-			user.password = hash;
-			next();
-		});
-	});
-});
-
+var User = module.exports = mongoose.model('User', userSchema);
 
 module.exports.comparePassword = function (candidatePassword, hash, callback) {
 	bcrypt.compare(candidatePassword, hash, function (err, isMatch) {

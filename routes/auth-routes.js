@@ -1,10 +1,11 @@
+require('dotenv').config();
 const router = require("express").Router();
 const passport = require('passport');
 const async = require('async');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const keys = require('../config/keys');
 var User = require('../models/user');
+const { DOMAIN_EMAIL, DOMAIN_PASSWORD } = process.env;
 
 const authCheck = (req, res, next) => {
 	if (req.user) {
@@ -42,15 +43,15 @@ router.post('/register', function (req, res) {
 		}, {});
 		res.render('register', { errors: errors, saveData: { name, email, password, password2 } });
 	} else {
-		User.findOne({ email: email }, function (err, user) {
+		User.findOne({ email: email }, async function (err, user) {
 			if (err) req.flash('error_msg', err);
 
 			if (!user) {
 				var newUser = new User({
 					name: name,
 					email: email,
-					password: password,
-					setEmail: true,
+					password: await User.HashPassword(password),
+					emailPresent: true,
 					thumbnail: 'default.png'
 				});
 
@@ -60,6 +61,7 @@ router.post('/register', function (req, res) {
 						console.log("Error in creating user " + err);
 						res.redirect('/auth/register');
 					} else {
+						console.log("My saved registered user " + User.HashPassword(password) + JSON.stringify(user))
 						req.login(user, (err) => {
 							if (err) {
 								throw err;
@@ -125,7 +127,7 @@ router.post('/forgot', function (req, res, next) {
 				user.resetPasswordToken = token;
 				user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
-				user.save(function (err) {
+				user.save(function (err, user) {
 					done(err, token, user);
 				});
 			});
@@ -134,8 +136,8 @@ router.post('/forgot', function (req, res, next) {
 			var transporter = nodemailer.createTransport({
 				service: 'gmail',
 				auth: {
-					user: keys.mail.email,
-					pass: keys.mail.password
+					user: DOMAIN_EMAIL,
+					pass: DOMAIN_PASSWORD
 				}
 			});
 			var mailOptions = {
@@ -181,16 +183,17 @@ router.get('/reset/:token', function (req, res) {
 router.post('/reset/:token', function (req, res) {
 	async.waterfall([
 		function (done) {
-			User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function (err, user) {
+			User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, async function (err, user) {
 				if (!user) {
 					req.flash('error', 'Password reset token is invalid or has expired.');
 					return res.redirect('back');
 				}
-				user.password = req.body.password;
+				user.password = await User.HashPassword(req.body.password);
 				user.resetPasswordToken = undefined;
 				user.resetPasswordExpires = undefined;
 
-				user.save(function (err) {
+				user.save(function (err, user) {
+					console.log("After reset" + JSON.stringify(user));
 					req.login(user, function (err) {
 						done(err, user);
 					});
@@ -201,8 +204,8 @@ router.post('/reset/:token', function (req, res) {
 			var transporter = nodemailer.createTransport({
 				service: 'gmail',
 				auth: {
-					user: keys.mail.email,
-					pass: keys.mail.password
+					user: DOMAIN_EMAIL,
+					pass: DOMAIN_PASSWORD
 				}
 			});
 			var mailOptions = {
