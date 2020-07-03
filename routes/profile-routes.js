@@ -7,12 +7,12 @@ var User = require('../models/user');
 const { DOMAIN_EMAIL, DOMAIN_PASSWORD } = process.env;
 
 const authCheck = (req, res, next) => {
-	if (!req.user) {
-		req.flash('error_msg', 'You are not logged in, Please login to access profile');
-		res.redirect('/auth/login');
-	} else {
-		next();
-	}
+	// if (!req.user) {
+	// 	req.flash('error_msg', 'You are not logged in, Please login to access profile');
+	// 	res.redirect('/auth/login');
+	// } else {
+	next();
+	// }
 }
 
 router.get('/', authCheck, (req, res) => {
