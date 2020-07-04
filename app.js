@@ -60,7 +60,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to mongo DB
-const url = "mongodb://passisroot12:root12@ds241059.mlab.com:41059/demoauth";
+const url = process.env.MONGODB_URI;
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, function (err) {
   if (err)
     console.log(err);
