@@ -12,6 +12,8 @@ const mongoose = require('mongoose');
 const { SESSION_COOKIE_KEY } = process.env;
 const authRoutes = require('./routes/auth-routes');
 const profileRoutes = require('./routes/profile-routes');
+const os = require("os");
+var hostname = os.hostname();
 require('./config/passport-setup');
 let SecureHttpsServer = false;
 
@@ -112,8 +114,8 @@ app.get('/', (req, res) => {
 app.set('port', process.env.PORT);
 
 // HTTPS Server
-https.createServer(options, app).listen(app.get('port'), function () {
-  console.log('Server started on port ' + app.get('port'));
+https.createServer(options, app).listen(app.get('port'), hostname, function () {
+  console.log(`Server running at https://${hostname}:${app.get('port')}`);
 });
 
 // app.listen(app.get('port'), function () {
