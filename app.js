@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 const { SESSION_COOKIE_KEY } = process.env;
 const authRoutes = require('./routes/auth-routes');
 const profileRoutes = require('./routes/profile-routes');
-const passportSetup = require('./config/passport-setup');
+require('./config/passport-setup');
 let SecureHttpsServer = false;
 
 const app = express();
