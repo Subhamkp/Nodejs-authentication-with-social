@@ -1,5 +1,11 @@
 # Nodejs-authentication-with-social
 
+This repository demonstrate the integration of different social apps like google, facebook, linkedIn to any web application
+
+
+
+# For more do checkout the below:
+
 https://hackernoon.com/launching-an-ec2-instance-fbfd50894aac
 https://hackernoon.com/deploying-a-node-app-on-amazon-ec2-d2fb9a6757eb
 
